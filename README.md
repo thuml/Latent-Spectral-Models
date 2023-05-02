@@ -16,7 +16,7 @@ To tackle both the approximation and computation complexities in PDE-governed ta
 
 ## LSM vs. Previous Methods
 
-Different from previous methods, instead of learning a single operator, inspired by classical spectral methods in numerical analysis, LSM composes complex mappings into multiple basis operators. Along with the latent space projection, LSM can present favorable approximation and convergence properties
+Different from previous methods, instead of learning a single operator, inspired by classical spectral methods in numerical analysis, LSM composes complex mappings into multiple basis operators. Along with the latent space projection, LSM presents favorable approximation and convergence properties.
 
 <p align="center">
 <img src=".\fig\compare.png" height = "200" alt="" align=center />
@@ -34,14 +34,15 @@ pip install -r requirements.txt
 
 2. Prepare Data. You can obtain the datasets from the following links.
 
-| Dataset                    | Task                                       | Link                                                         |
-| -------------------------- | ------------------------------------------ | ------------------------------------------------------------ |
-| Elasticity-P, Elasticity-G | Estimate the inner stress                  | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
-| Plasticity                 | Estimate the deformation over time         | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
-| Navier-Stokes              | Predict the fluid velocity                 | [[Google Cloud]](https://drive.google.com/drive/folders/1UnbQh2WWc6knEHbLn-ZaXrKUZhp7pjt-) |
-| Darcy                      | Estimate the fluid pressure through medium | [[Google Cloud]](https://drive.google.com/drive/folders/1UnbQh2WWc6knEHbLn-ZaXrKUZhp7pjt-) |
-| AirFoil                    | Estimate the airﬂow velocity               | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
-| Pipe                       | Estimate the fluid velocity                | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
+| Dataset       | Task                                    | Geometry        | Link                                                         |
+| ------------- | --------------------------------------- | --------------- | ------------------------------------------------------------ |
+| Elasticity-P  | Estimate material inner stress          | Point Cloud     | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
+| Elasticity-G  | Estimate material inner stress          | Regular Grid    | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
+| Plasticity    | Estimate material deformation over time | Structured Mesh | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
+| Navier-Stokes | Predict future fluid velocity           | Regular Grid    | [[Google Cloud]](https://drive.google.com/drive/folders/1UnbQh2WWc6knEHbLn-ZaXrKUZhp7pjt-) |
+| Darcy         | Estimate fluid pressure through medium  | Regular Grid    | [[Google Cloud]](https://drive.google.com/drive/folders/1UnbQh2WWc6knEHbLn-ZaXrKUZhp7pjt-) |
+| AirFoil       | Estimate airﬂow velocity around airfoil | Structured Mesh | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
+| Pipe          | Estimate fluid velocity in a pipe       | Structured Mesh | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
 
 2. Train and evaluate model. We provide the experiment scripts of all benchmarks under the folder `./scripts/`. You can reproduce the experiment results as the following examples:
 
