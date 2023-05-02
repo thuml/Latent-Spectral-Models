@@ -32,7 +32,7 @@ Different from previous methods that learn a single operator directly, inspired 
 pip install -r requirements.txt
 ```
 
-2. Prepare Data. You can obtain datasets from following links. Then Place them under `./datasets/`.
+2. Prepare Data. You can obtain experimental datasets from the following links.
 
 
 | Dataset       | Task                                    | Geometry        | Link                                                         |
@@ -56,6 +56,8 @@ bash scripts/darcy_lsm.sh # for Darcy
 bash scripts/airfoil_lsm.sh # for Airfoil
 bash scripts/pipe_lsm.sh # for Pipe
 ```
+
+ Note: You need to change the argument `--data-path` in above script files to your dataset path.
 
 4. Develop your own model. Here are the instructions:
 
