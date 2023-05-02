@@ -60,7 +60,7 @@ bash scripts/pipe_lsm.sh # for Pipe
 4. Develop your own model. Here are the instructions:
 
    - Add the model file under folder `./models/`.
-   - Add the model into `./model_dict.py`.
+   - Add the model name into `./model_dict.py`.
    - Add a script file under folder `./scripts/` and change the argument `--model`.
 
    Note: For clearness and easy comparison, we also include the FNO in this repository.
