@@ -16,7 +16,7 @@ To tackle both the approximation and computation complexities in PDE-governed ta
 
 ## LSM vs. Previous Methods
 
-Different from previous methods, instead of learning a single operator, inspired by classical spectral methods in numerical analysis, LSM composes complex mappings into multiple basis operators. Along with the latent space projection, LSM presents favorable approximation and convergence properties.
+Different from previous methods that learn a single operator directly, inspired by classical spectral methods in numerical analysis, LSM composes complex mappings into multiple basis operators. Along with the latent space projection, LSM presents favorable approximation and convergence properties.
 
 <p align="center">
 <img src=".\fig\compare.png" height = "200" alt="" align=center />
