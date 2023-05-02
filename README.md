@@ -64,7 +64,7 @@ We extensively experiment on seven benchmarks and compare LSM with 13 baselines.
 <p align="center">
 <img src=".\fig\main_results.png" height = "350" alt="" align=center />
 <br><br>
-<b>Table 1.</b> Model perfromance on seven benchmarks. MSE is recorded.
+<b>Table 1.</b> Model performance on seven benchmarks. MSE is recorded.
 </p>
 
 ## Showcases
