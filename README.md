@@ -65,7 +65,7 @@ bash scripts/pipe_lsm.sh # for Pipe
    - Add the model name into `./model_dict.py`.
    - Add a script file under folder `./scripts/` and change the argument `--model`.
 
-   Note: For clearness and easy comparison, we also include the FNO in this repository.
+ Note: For clearness and easy comparison, we also include the FNO in this repository.
 
 ## Results
 
