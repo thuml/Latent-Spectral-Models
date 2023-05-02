@@ -57,7 +57,7 @@ bash scripts/airfoil_lsm.sh # for Airfoil
 bash scripts/pipe_lsm.sh # for Pipe
 ```
 
- Note: You need to change the argument `--data-path` in above script files to your dataset path.
+ Note: You need to change the argument `--data-path` in the above script files to your dataset path.
 
 4. Develop your own model. Here are the instructions:
 
