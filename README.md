@@ -32,7 +32,7 @@ Different from previous methods that learn a single operator directly, inspired 
 pip install -r requirements.txt
 ```
 
-2. Prepare Data. You can obtain the datasets from the following links.
+2. Prepare Data. You can obtain experimental datasets from the following links.
 
 
 | Dataset       | Task                                    | Geometry        | Link                                                         |
