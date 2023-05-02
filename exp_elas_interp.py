@@ -1,11 +1,12 @@
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from timeit import default_timer
-from utilities3 import *
-from adam import Adam
+from utils.utilities3 import *
+from utils.adam import Adam
+from utils.params import get_args
+from model_dict import get_model
 import math
 import os
-from models.LSM_2D import LSM2d
 
 torch.manual_seed(0)
 np.random.seed(0)
@@ -15,41 +16,43 @@ torch.backends.cudnn.deterministic = True
 ################################################################
 # configs
 ################################################################
-INPUT_PATH = '/home/wuhaixu/elasticity/Interp/Random_UnitCell_mask_10_interp.npy'
-OUTPUT_PATH = '/home/wuhaixu/elasticity/Interp/Random_UnitCell_sigma_10_interp.npy'
-N = 2000
-ntrain = 1000
-ntest = 200
+args = get_args()
 
-in_channels = 1
-out_channels = 1
-r1 = 1
-r2 = 1
-s1 = int(((41 - 1) / r1) + 1)
-s2 = int(((41 - 1) / r2) + 1)
+INPUT_PATH = os.path.join(args.data_path, './Interp/Random_UnitCell_mask_10_interp.npy')
+OUTPUT_PATH = os.path.join(args.data_path, './Interp/Random_UnitCell_sigma_10_interp.npy')
 
-batch_size = 20
-learning_rate = 0.001
-epochs = 501
-step_size = 100
-gamma = 0.5
+ntrain = args.ntrain
+ntest = args.ntest
+N = args.ntotal
+in_channels = args.in_dim
+out_channels = args.out_dim
+r1 = args.h_down
+r2 = args.w_down
+s1 = int(((args.h - 1) / r1) + 1)
+s2 = int(((args.w - 1) / r2) + 1)
 
-num_basis = 12
-num_token = 4
-width = 32
-patch_size = [3, 3]
-padding = [7, 7]
+batch_size = args.batch_size
+learning_rate = args.learning_rate
+epochs = args.epochs
+step_size = args.step_size
+gamma = args.gamma
 
-model_save_path = './checkpoints/elas_interp'
-model_save_name = 'elas_interp_lsm.pt'
+model_save_path = args.model_save_path
+model_save_name = args.model_save_name
+
+################################################################
+# models
+################################################################
+model = get_model(args)
+print(count_params(model))
 
 ################################################################
 # load data and data normalization
 ################################################################
 input = np.load(INPUT_PATH)
-input = torch.tensor(input, dtype=torch.float).permute(2,0,1)
+input = torch.tensor(input, dtype=torch.float).permute(2, 0, 1)
 output = np.load(OUTPUT_PATH)
-output = torch.tensor(output, dtype=torch.float).permute(2,0,1)
+output = torch.tensor(output, dtype=torch.float).permute(2, 0, 1)
 
 x_train = input[:N][:ntrain, ::r1, ::r2][:, :s1, :s2]
 y_train = output[:N][:ntrain, ::r1, ::r2][:, :s1, :s2]
@@ -64,12 +67,6 @@ train_loader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(x_trai
                                            shuffle=True)
 test_loader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(x_test, y_test), batch_size=batch_size,
                                           shuffle=False)
-
-################################################################
-# models
-################################################################
-model = LSM2d(in_channels, out_channels, width, patch_size, num_basis, num_token, padding).cuda()
-print(count_params(model))
 
 ################################################################
 # training and evaluation
@@ -89,7 +86,7 @@ for ep in range(epochs):
 
         optimizer.zero_grad()
         out = model(x)
-        out = out*mask
+        out = out * mask
 
         loss = myloss(out.view(batch_size, -1), y.view(batch_size, -1))
         loss.backward()
@@ -116,3 +113,8 @@ for ep in range(epochs):
 
     t2 = default_timer()
     print(ep, t2 - t1, train_l2, test_l2)
+    if ep % step_size == 0:
+        if not os.path.exists(model_save_path):
+            os.makedirs(model_save_path)
+        print('save model')
+        torch.save(model.state_dict(), os.path.join(model_save_path, model_save_name))

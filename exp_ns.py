@@ -1,11 +1,12 @@
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from timeit import default_timer
-from utilities3 import *
-from adam import Adam
+from utils.utilities3 import *
+from utils.params import get_args
+from model_dict import get_model
+from utils.adam import Adam
 import math
 import os
-from models.LSM_2D import LSM2d
 
 torch.manual_seed(0)
 np.random.seed(0)
@@ -15,36 +16,37 @@ torch.backends.cudnn.deterministic = True
 ################################################################
 # configs
 ################################################################
-TRAIN_PATH = '/data/fno/NavierStokes_V1e-5_N1200_T20.mat'
-TEST_PATH = '/data/fno/NavierStokes_V1e-5_N1200_T20.mat'
+args = get_args()
 
-ntrain = 1000
-ntest = 200
-N = 1200
-in_channels = 10
-out_channels = 1
-r1 = 1
-r2 = 1
-s1 = int(((64 - 1) / r1) + 1)
-s2 = int(((64 - 1) / r2) + 1)
-T_in = 10
-T_out = 10
-step = 1
+TRAIN_PATH = os.path.join(args.data_path, './NavierStokes_V1e-5_N1200_T20.mat')
+TEST_PATH = os.path.join(args.data_path, './NavierStokes_V1e-5_N1200_T20.mat')
 
-batch_size = 20
-learning_rate = 0.0005
-epochs = 501
-step_size = 100
-gamma = 0.5
+ntrain = args.ntrain
+ntest = args.ntest
+N = args.ntotal
+in_channels = args.in_dim
+out_channels = args.out_dim
+r1 = args.h_down
+r2 = args.w_down
+s1 = int(((args.h - 1) / r1) + 1)
+s2 = int(((args.w - 1) / r2) + 1)
+T_in = args.T_in
+T_out = args.T_out
 
-num_basis = 12
-num_token = 4
-width = 64
-patch_size = [4, 4]
-padding = [0, 0]
+batch_size = args.batch_size
+learning_rate = args.learning_rate
+epochs = args.epochs
+step_size = args.step_size
+gamma = args.gamma
 
-model_save_path = './checkpoints/ns'
-model_save_name = 'ns_lsm.pt'
+model_save_path = args.model_save_path
+model_save_name = args.model_save_name
+
+################################################################
+# models
+################################################################
+model = get_model(args)
+print(count_params(model))
 
 ################################################################
 # load data and data normalization
@@ -69,12 +71,6 @@ test_loader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(test_a,
                                           shuffle=False)
 
 ################################################################
-# models
-################################################################
-model = LSM2d(in_channels, out_channels, width, patch_size, num_basis, num_token, padding).cuda()
-print(count_params(model))
-
-################################################################
 # training and evaluation
 ################################################################
 optimizer = Adam(model.parameters(), lr=learning_rate, weight_decay=1e-4)
@@ -82,6 +78,7 @@ scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamm
 
 myloss = LpLoss(size_average=False)
 
+step = 1
 for ep in range(epochs):
     model.train()
     t1 = default_timer()
@@ -140,3 +137,8 @@ for ep in range(epochs):
     print(ep, t2 - t1, train_l2_step / ntrain / (T_out / step), train_l2_full / ntrain,
           test_l2_step / ntest / (T_out / step),
           test_l2_full / ntest)
+    if ep % step_size == 0:
+        if not os.path.exists(model_save_path):
+            os.makedirs(model_save_path)
+        print('save model')
+        torch.save(model.state_dict(), os.path.join(model_save_path, model_save_name))

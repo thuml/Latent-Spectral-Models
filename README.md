@@ -16,7 +16,7 @@ To tackle both the approximation and computation complexities in PDE-governed ta
 
 ## LSM vs. Previous Methods
 
-Different from previous methods, instead of learning a single operator, inspired by classical spectral methods in numerical analysis, LSM composes complex mappings into multiple basis operators. Along with the latent space projection, LSM presents favorable approximation and convergence properties.
+Different from previous methods that learn a single operator directly, inspired by classical spectral methods in numerical analysis, LSM composes complex mappings into multiple basis operators. Along with the latent space projection, LSM presents favorable approximation and convergence properties.
 
 <p align="center">
 <img src=".\fig\compare.png" height = "200" alt="" align=center />
@@ -32,7 +32,8 @@ Different from previous methods, instead of learning a single operator, inspired
 pip install -r requirements.txt
 ```
 
-2. Prepare Data. You can obtain the datasets from the following links.
+2. Prepare Data. You can obtain experimental datasets from the following links.
+
 
 | Dataset       | Task                                    | Geometry        | Link                                                         |
 | ------------- | --------------------------------------- | --------------- | ------------------------------------------------------------ |
@@ -44,7 +45,7 @@ pip install -r requirements.txt
 | AirFoil       | Estimate airﬂow velocity around airfoil | Structured Mesh | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
 | Pipe          | Estimate fluid velocity in a pipe       | Structured Mesh | [[Google Cloud]](https://drive.google.com/drive/folders/1YBuaoTdOSr_qzaow-G-iwvbUI7fiUzu8) |
 
-2. Train and evaluate model. We provide the experiment scripts of all benchmarks under the folder `./scripts/`. You can reproduce the experiment results as the following examples:
+3. Train and evaluate model. We provide the experiment scripts of all benchmarks under the folder `./scripts/`. You can reproduce the experiment results as the following examples:
 
 ```bash
 bash scripts/elas_lsm.sh # for Elasticity-P
@@ -56,6 +57,14 @@ bash scripts/airfoil_lsm.sh # for Airfoil
 bash scripts/pipe_lsm.sh # for Pipe
 ```
 
+4. Develop your own model. Here are the instructions:
+
+   - You can add your model file under the folder `./models/`.
+   - Add the model into the `./model_dict.py`.
+   - Add a script file under the folder `./scripts/` and change the argument `--model`.
+
+   Note: For clearness and easy comparison, we also include the FNO in this repository.
+
 ## Results
 
 We extensively experiment on seven benchmarks and compare LSM with 13 baselines. LSM achieves the consistent state-of-the-art in both solid and fluid physics (11.5% averaged error reduction).
@@ -63,7 +72,7 @@ We extensively experiment on seven benchmarks and compare LSM with 13 baselines.
 <p align="center">
 <img src=".\fig\main_results.png" height = "350" alt="" align=center />
 <br><br>
-<b>Table 1.</b> Model perfromance on seven benchmarks. MSE is recorded.
+<b>Table 1.</b> Model performance on seven benchmarks. MSE is recorded.
 </p>
 
 ## Showcases

@@ -1,11 +1,12 @@
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from timeit import default_timer
-from utilities3 import *
-from adam import Adam
+from utils.utilities3 import *
+from utils.adam import Adam
+from utils.params import get_args
+from model_dict import get_model
 import math
 import os
-from models.LSM_2D import LSM2d
 
 torch.manual_seed(0)
 np.random.seed(0)
@@ -15,32 +16,35 @@ torch.backends.cudnn.deterministic = True
 ################################################################
 # configs
 ################################################################
-TRAIN_PATH = '/home/wuhaixu/piececonst_r421_N1024_smooth1.mat'
-TEST_PATH = '/home/wuhaixu/piececonst_r421_N1024_smooth2.mat'
+args = get_args()
 
-ntrain = 1000
-ntest = 200
-in_channels = 1
-out_channels = 1
-r1 = 5
-r2 = 5
-s1 = int(((421 - 1) / r1) + 1)
-s2 = int(((421 - 1) / r2) + 1)
+TRAIN_PATH = os.path.join(args.data_path, './piececonst_r421_N1024_smooth1.mat')
+TEST_PATH = os.path.join(args.data_path, './piececonst_r421_N1024_smooth2.mat')
 
-batch_size = 20
-learning_rate = 0.001
-epochs = 501
-step_size = 100
-gamma = 0.5
+ntrain = args.ntrain
+ntest = args.ntest
+N = args.ntotal
+in_channels = args.in_dim
+out_channels = args.out_dim
+r1 = args.h_down
+r2 = args.w_down
+s1 = int(((args.h - 1) / r1) + 1)
+s2 = int(((args.w - 1) / r2) + 1)
 
-num_basis = 12
-num_token = 4
-width = 64
-patch_size = [3, 3]
-padding = [11, 11]
+batch_size = args.batch_size
+learning_rate = args.learning_rate
+epochs = args.epochs
+step_size = args.step_size
+gamma = args.gamma
 
-model_save_path = './checkpoints/darcy'
-model_save_name = 'darcy_lsm.pt'
+model_save_path = args.model_save_path
+model_save_name = args.model_save_name
+
+################################################################
+# models
+################################################################
+model = get_model(args)
+print(count_params(model))
 
 ################################################################
 # load data and data normalization
@@ -68,12 +72,6 @@ train_loader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(x_trai
                                            shuffle=True)
 test_loader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(x_test, y_test), batch_size=batch_size,
                                           shuffle=False)
-
-################################################################
-# models
-################################################################
-model = LSM2d(in_channels, out_channels, width, patch_size, num_basis, num_token, padding).cuda()
-print(count_params(model))
 
 ################################################################
 # training and evaluation
@@ -118,3 +116,8 @@ for ep in range(epochs):
 
     t2 = default_timer()
     print(ep, t2 - t1, train_l2, test_l2)
+    if ep % step_size == 0:
+        if not os.path.exists(model_save_path):
+            os.makedirs(model_save_path)
+        print('save model')
+        torch.save(model.state_dict(), os.path.join(model_save_path, model_save_name))

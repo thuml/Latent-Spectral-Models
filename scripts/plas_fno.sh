@@ -12,13 +12,13 @@ python exp_plas.py \
   --h-down 1 \
   --w-down 1 \
   --T-in 20 \
-  --batch-size 20 \
+  --batch-size 5 \
   --learning-rate 0.0005 \
-  --model LSM_3D \
+  --model FNO_3D \
   --d-model 32 \
   --num-basis 12 \
   --num-token 4 \
   --patch-size 7,2,2 \
   --padding 12,1,11 \
   --model-save-path ./checkpoints/plas \
-  --model-save-name lsm.pt
+  --model-save-name fno.pt

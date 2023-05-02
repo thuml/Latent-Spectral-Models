@@ -1,4 +1,4 @@
-export CUDA_VISIBLE_DEVICES=7
+export CUDA_VISIBLE_DEVICES=0
 
 python exp_airfoils.py \
   --data-path /home/wuhaixu/airfoil \
@@ -13,11 +13,11 @@ python exp_airfoils.py \
   --w-down 1 \
   --batch-size 20 \
   --learning-rate 0.001 \
-  --model LSM_2D \
+  --model FNO_2D \
   --d-model 32 \
   --num-basis 12 \
   --num-token 4 \
   --patch-size 14,4 \
   --padding 13,3 \
   --model-save-path ./checkpoints/airfoil \
-  --model-save-name lsm.pt
+  --model-save-name fno.pt

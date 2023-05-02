@@ -1,12 +1,12 @@
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from timeit import default_timer
-from utilities3 import *
-from adam import Adam
+from utils.utilities3 import *
+from utils.adam import Adam
+from utils.params import get_args
+from model_dict import get_model
 import math
 import os
-from models.LSM_Irregular_Geo import LSM2d
-from models.LSM_Irregular_Geo import IPHI
 
 torch.manual_seed(0)
 np.random.seed(0)
@@ -16,31 +16,33 @@ torch.backends.cudnn.deterministic = True
 ################################################################
 # configs
 ################################################################
-PATH_Sigma = '/home/wuhaixu/elasticity/Meshes/Random_UnitCell_sigma_10.npy'
-PATH_XY = '/home/wuhaixu/elasticity/Meshes/Random_UnitCell_XY_10.npy'
-PATH_rr = '/home/wuhaixu/elasticity/Meshes/Random_UnitCell_rr_10.npy'
-N = 2000
-ntrain = 1000
-ntest = 200
+args = get_args()
 
-in_channels = 2
-out_channels = 1
+PATH_Sigma = os.path.join(args.data_path, './Meshes/Random_UnitCell_sigma_10.npy')
+PATH_XY = os.path.join(args.data_path, './Meshes/Random_UnitCell_XY_10.npy')
+PATH_rr = os.path.join(args.data_path, './Meshes/Random_UnitCell_rr_10.npy')
 
-batch_size = 20
-learning_rate = 0.0005
-epochs = 501
-step_size = 100
-gamma = 0.5
+ntrain = args.ntrain
+ntest = args.ntest
+N = args.ntotal
+in_channels = args.in_dim
+out_channels = args.out_dim
 
-num_basis = 12
-num_token = 4
-width = 32
-patch_size = [6, 6]
-padding = [0, 0]
-modes = 12
+batch_size = args.batch_size
+learning_rate = args.learning_rate
+epochs = args.epochs
+step_size = args.step_size
+gamma = args.gamma
 
-model_save_path = './checkpoints/elas'
-model_save_name = 'elas_lsm.pt'
+model_save_path = args.model_save_path
+model_save_name = args.model_save_name
+
+################################################################
+# models
+################################################################
+model, model_iphi = get_model(args)
+print(count_params(model), count_params(model_iphi))
+params = list(model.parameters()) + list(model_iphi.parameters())
 
 ################################################################
 # load data and data normalization
@@ -69,16 +71,8 @@ test_loader = torch.utils.data.DataLoader(torch.utils.data.TensorDataset(test_rr
                                           shuffle=False)
 
 ################################################################
-# models
-################################################################
-model = LSM2d(in_channels, out_channels, width, patch_size, num_basis, num_token, padding).cuda()
-model_iphi = IPHI().cuda()
-print(count_params(model), count_params(model_iphi))
-
-################################################################
 # training and evaluation
 ################################################################
-params = list(model.parameters()) + list(model_iphi.parameters())
 optimizer = Adam(params, lr=learning_rate, weight_decay=1e-4)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=step_size, gamma=gamma)
 
@@ -118,3 +112,8 @@ for ep in range(epochs):
 
     t2 = default_timer()
     print(ep, t2 - t1, train_l2, test_l2)
+    if ep % step_size == 0:
+        if not os.path.exists(model_save_path):
+            os.makedirs(model_save_path)
+        print('save model')
+        torch.save(model.state_dict(), os.path.join(model_save_path, model_save_name))

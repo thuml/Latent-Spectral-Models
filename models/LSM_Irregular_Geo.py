@@ -360,10 +360,16 @@ class NeuralSpectralBlock2d(nn.Module):
         return x
 
 
-class LSM2d(nn.Module):
-    def __init__(self, in_channels, out_channels, width, patch_size, num_basis, num_token, padding=[0, 0],
-                 bilinear=True, modes1=12, modes2=12, s1=96, s2=96):
-        super(LSM2d, self).__init__()
+class Model(nn.Module):
+    def __init__(self, args, bilinear=True, modes1=12, modes2=12, s1=96, s2=96):
+        super(Model, self).__init__()
+        in_channels = args.in_dim
+        out_channels = args.out_dim
+        width = args.d_model
+        num_token = args.num_token
+        num_basis = args.num_basis
+        patch_size = [int(x) for x in args.patch_size.split(',')]
+        padding = [int(x) for x in args.padding.split(',')]
         # multiscale modules
         self.inc = DoubleConv(width, width)
         self.down1 = Down(width, width * 2)
