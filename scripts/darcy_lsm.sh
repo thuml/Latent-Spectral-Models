@@ -12,12 +12,12 @@ python exp_darcy.py \
   --h-down 5 \
   --w-down 5 \
   --batch-size 20 \
-  --learning-rate 0.001 \
+  --learning-rate 0.0005 \
   --model LSM_2D \
   --d-model 64 \
   --num-basis 12 \
   --num-token 4 \
-  --patch-size 3,3 \
+  --patch-size 6,6 \
   --padding 11,11 \
   --model-save-path ./checkpoints/darcy \
   --model-save-name lsm.pt
