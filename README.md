@@ -1,5 +1,7 @@
 # Latent Spectral Models (ICML 2023)
 
+**Paper Correction:** There is a typo in our descriptions about evaluation metrics. The paper reported results are Relative L2.
+
 Solving High-Dimensional PDEs with Latent Spectral Models [[paper]](https://arxiv.org/abs/2301.12664)
 
 To tackle both the approximation and computation complexities in PDE-governed tasks. We propose the Latent Spectral Models (LSM) with the following features:
