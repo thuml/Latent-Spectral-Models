@@ -1,5 +1,7 @@
 # Latent Spectral Models (ICML 2023)
 
+:triangular_flag_on_post:**News** (2025.04) We have released [Neural-Solver-Library](https://github.com/thuml/Neural-Solver-Library) as a simple and neat code base for PDE solving. It contains 17 well-reproduced neural solvers. Welcome to try this library and join the research in solving PDEs.
+
 **Paper Correction:** There is a typo in our descriptions about evaluation metrics. The paper reported results are Relative L2.
 
 Solving High-Dimensional PDEs with Latent Spectral Models [[paper]](https://arxiv.org/abs/2301.12664)
